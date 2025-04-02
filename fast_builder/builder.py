@@ -2,6 +2,7 @@ import os
 import shutil
 from importlib import resources
 
+
 def create_folder(path):
     """Создает папку и добавляет __init__.py, если его нет."""
     os.makedirs(path, exist_ok=True)
@@ -9,19 +10,25 @@ def create_folder(path):
     if not os.path.exists(init_path):
         open(init_path, "w").close()
 
+
 def copy_file(src, dest):
     """Копирует файл, если он существует в пакете."""
-    # Используем files вместо path
-    with resources.files("fast_builder").joinpath(src).open('rb') as src_file:
+    # Получаем путь к библиотеке, которая установлена в виртуальном окружении
+    package_path = resources.files("fast_builder").joinpath(src)
+
+    # Копируем файл из пакета в целевую папку
+    with package_path.open('rb') as src_file:
         with open(dest, 'wb') as dst_file:
             shutil.copyfileobj(src_file, dst_file)
         print(f"Скопирован {src} -> {dest}")
+
 
 def build_files():
     """
     Создание структуры проекта и копирование стандартных файлов.
     """
-    root_path = os.path.abspath(os.path.dirname(__file__))
+    # Указываем корень проекта вручную
+    root_path = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))  # Это будет папка проекта
 
     # Основные директории проекта + файлы
     folders = {
@@ -43,7 +50,7 @@ def build_files():
     }
 
     for folder, content in folders.items():
-        folder_path = os.path.join(root_path, folder)
+        folder_path = os.path.join(root_path, folder)  # Путь в корне проекта
         create_folder(folder_path)
 
         if content:  # Если есть файлы или подкаталоги
@@ -60,7 +67,7 @@ def build_files():
                         for file in files:
                             copy_file(file, os.path.join(subfolder_path, os.path.basename(file)))
 
-            elif isinstance(content, list): # Просто список файлов (корень или папка)
+            elif isinstance(content, list):  # Просто список файлов (корень или папка)
                 if folder == "root":
                     for file in content:
                         copy_file(file, os.path.join(root_path, os.path.basename(file)))
@@ -68,6 +75,7 @@ def build_files():
                     copy_file(file, os.path.join(folder_path, os.path.basename(file)))
 
     print("✅ Проект успешно создан!")
+
 
 if __name__ == "__main__":
     build_files()
