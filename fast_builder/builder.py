@@ -25,7 +25,6 @@ def build_files():
 
     # Основные директории проекта + файлы
     folders = {
-        "root": ["templates/.env", "templates/.gitignore"],  # Файл в корень
         "Dtos": None,
         "Utils": {
             "subfolders": {
