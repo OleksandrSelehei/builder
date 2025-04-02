@@ -12,11 +12,11 @@ def create_folder(path):
 
 
 def copy_file(src, dest):
-    """Копирует файл, если он существует в пакете."""
-    # Получаем путь к библиотеке, которая установлена в виртуальном окружении
+    """Копирует файл из пакета в указанную директорию проекта."""
+    # Получаем путь к файлу из пакета, который установлен в виртуальном окружении
     package_path = resources.files("fast_builder").joinpath(src)
 
-    # Копируем файл из пакета в целевую папку
+    # Копируем файл из пакета в целевую папку проекта
     with package_path.open('rb') as src_file:
         with open(dest, 'wb') as dst_file:
             shutil.copyfileobj(src_file, dst_file)
@@ -27,8 +27,8 @@ def build_files():
     """
     Создание структуры проекта и копирование стандартных файлов.
     """
-    # Указываем корень проекта вручную
-    root_path = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))  # Это будет папка проекта
+    # Получаем корень проекта (это путь, где находится этот скрипт, а не виртуальное окружение)
+    root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))  # Путь до корня проекта
 
     # Основные директории проекта + файлы
     folders = {
@@ -50,7 +50,7 @@ def build_files():
     }
 
     for folder, content in folders.items():
-        folder_path = os.path.join(root_path, folder)  # Путь в корне проекта
+        folder_path = os.path.join(root_path, folder)  # Путь будет в корне проекта
         create_folder(folder_path)
 
         if content:  # Если есть файлы или подкаталоги
