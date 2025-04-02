@@ -75,14 +75,5 @@ def build_files():
     print("✅ Проект успешно создан!")
 
 
-import os
-
-def get_current_directory():
-    current_directory = os.getcwd()
-    return current_directory
-
-
-
-
 if __name__ == "__main__":
-    print(get_current_directory())
+    print(build_files())
