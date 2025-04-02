@@ -27,8 +27,6 @@ def build_files():
     """
     Создание структуры проекта и копирование стандартных файлов.
     """
-    # Получаем корень проекта (это путь, где находится этот скрипт, а не виртуальное окружение)
-    root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))  # Путь до корня проекта
 
     # Основные директории проекта + файлы
     folders = {
@@ -50,7 +48,7 @@ def build_files():
     }
 
     for folder, content in folders.items():
-        folder_path = os.path.join(root_path, folder)  # Путь будет в корне проекта
+        folder_path = os.path.join(os.getcwd(), folder)  # Путь будет в корне проекта
         create_folder(folder_path)
 
         if content:  # Если есть файлы или подкаталоги
@@ -70,12 +68,21 @@ def build_files():
             elif isinstance(content, list):  # Просто список файлов (корень или папка)
                 if folder == "root":
                     for file in content:
-                        copy_file(file, os.path.join(root_path, os.path.basename(file)))
+                        copy_file(file, os.path.join(os.getcwd(), os.path.basename(file)))
                 for file in content:
-                    copy_file(file, os.path.join(folder_path, os.path.basename(file)))
+                    copy_file(file, os.path.join(os.getcwd(), os.path.basename(file)))
 
     print("✅ Проект успешно создан!")
 
 
+import os
+
+def get_current_directory():
+    current_directory = os.getcwd()
+    return current_directory
+
+
+
+
 if __name__ == "__main__":
-    build_files()
+    print(get_current_directory())
