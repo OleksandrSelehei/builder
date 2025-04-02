@@ -11,8 +11,10 @@ def create_folder(path):
 
 def copy_file(src, dest):
     """Копирует файл, если он существует в пакете."""
-    with resources.path("fast_builder", src) as src_file:
-        shutil.copy(src_file, dest)
+    # Используем files вместо path
+    with resources.files("fast_builder").joinpath(src).open('rb') as src_file:
+        with open(dest, 'wb') as dst_file:
+            shutil.copyfileobj(src_file, dst_file)
         print(f"Скопирован {src} -> {dest}")
 
 def build_files():
